@@ -42,23 +42,14 @@ RUN dpkg --add-architecture i386 && \
     tzdata --fix-missing && \
     rm -rf /var/lib/apt/list/*
 
+WORKDIR /tools
 
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN git clone https://github.com/ohmyzsh/ohmyzsh.git &&  cd ohmyzsh &&  cd tools &&  chmod +x install.sh && ./install.sh
     
 #RUN version=$(curl -s https://api.github.com/repos/radareorg/radare2/releases/latest | grep -P '"tag_name": "(.*)"' -o| awk '{print $2}' | awk -F"\"" '{print $2}') && \
 #    wget https://github.com/radareorg/radare2/releases/download/${version}/radare2_${version}_amd64.deb && \
 #    dpkg -i radare2_${version}_amd64.deb && rm radare2_${version}_amd64.deb
 
-RUN python3 -m pip install -U pip && \
-    python3 -m pip install --no-cache-dir \
-    ropgadget \
-    z3-solver \
-    ropper \
-    unicorn \
-    keystone-engine \
-    capstone \
-    angr \
-    pebble 
 
 RUN gem install one_gadget seccomp-tools && rm -rf /var/lib/gems/2.*/cache/*
 
@@ -105,10 +96,35 @@ COPY --from=skysider/glibc_builder32:2.35 /glibc/2.35/32 /glibc/2.35/32
 COPY --from=skysider/glibc_builder64:2.36 /glibc/2.36/64 /glibc/2.36/64
 COPY --from=skysider/glibc_builder32:2.36 /glibc/2.36/32 /glibc/2.36/32
 
-RUN python3 -m pip install --no-cache-dir pwntools
+RUN python3 -m pip install --no-cache-dir pwntools --break-system-packages
+
+RUN python3 -m pip install --no-cache-dir --break-system-packages \
+    ropgadget \
+    z3-solver \
+    ropper \
+    unicorn \
+    keystone-engine \
+    capstone \
+    angr \
+    pebble 
+
+
+RUN python3 -m pip install --no-cache-dir --break-system-packages pwntools
+
 
 #ARG PWNTOOLS_VERSION
 
 #RUN python3 -m pip install --no-cache-dir pwntools==${PWNTOOLS_VERSION}
 
-CMD ["/sbin/my_init"]
+RUN wget "https://github.com/io12/pwninit/releases/download/3.3.1/pwninit" -o /bin/pwninit
+
+
+RUN mv pwninit /bin/pwninit
+
+RUN chmod +x /bin/pwninit
+
+RUN chsh -s /usr/bin/zsh
+
+
+WORKDIR /data
+
