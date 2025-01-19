@@ -125,6 +125,9 @@ RUN chmod +x /bin/pwninit
 
 RUN chsh -s /usr/bin/zsh
 
+RUN  echo "FLAG{*** REDACTED ***}" > /flag.txt
+RUN  echo "FLAG{*** REDACTED ***}" > /flag
+RUN  echo "setw -g mouse on" > ~/.tmux.conf
 
 WORKDIR /data
 
