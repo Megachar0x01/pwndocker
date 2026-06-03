@@ -2,10 +2,22 @@ Pwndocker
 =========
 A docker environment for pwn in ctf based on **phusion/baseimage:jammy-1.0.4**, which is a modified ubuntu 22.04 baseimage for docker
 
-### Usage
+```bash
+sudo apt update 
+sudo apt install docker.io -y
+sudo groupadd -f docker
+sudo usermod -aG docker $USER
+newgrp docker
+groups
 
-	docker-compose up -d
-	docker exec -it pwn_test /bin/bash
+docker build . -t pwn_docker # Copy Dockerfile in current directory.
+
+echo "YWxpYXMgcHdubj0nZG9ja2VyIHJ1biAtdiAiLi86L2RhdGEiIC1pdCBwd25fZG9ja2VyIC9iaW4v
+dG11eCcK" | base64 -d >> ~/.bashrc
+
+# restart bash shell and type cmd `pwnn` to get shell
+
+```
 
 
 ### included software
