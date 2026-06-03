@@ -1,5 +1,5 @@
 FROM phusion/baseimage:jammy-1.0.4
-LABEL maintainer="skysider <skysider@163.com>"
+LABEL maintainer="MegaChar0x01"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Asia/Shanghai
@@ -90,6 +90,23 @@ RUN git clone --depth 1 https://github.com/niklasb/libc-database.git /var/lib/li
     pwn libcdb fetch -u ubuntu debian && \
     rm -rf /tmp/* /var/lib/libc-database/.git
 
-WORKDIR /ctf/work/
 
-CMD ["/sbin/my_init"]
+WORKDIR /tools
+
+RUN git clone https://github.com/ohmyzsh/ohmyzsh.git &&  cd ohmyzsh &&  cd tools &&  chmod +x install.sh && ./install.sh
+
+RUN wget "https://github.com/io12/pwninit/releases/download/3.3.1/pwninit" -o /bin/pwninit
+
+RUN mv pwninit /bin/pwninit
+
+RUN chmod +x /bin/pwninit
+
+RUN chsh -s /usr/bin/zsh
+
+RUN  echo "FLAG{*** REDACTED ***}" > /flag.txt
+RUN  echo "FLAG{*** REDACTED ***}" > /flag
+RUN  echo "setw -g mouse on" > ~/.tmux.conf
+
+WORKDIR /data
+
+
